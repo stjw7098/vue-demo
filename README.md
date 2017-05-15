@@ -3,7 +3,7 @@
 
 
 <div align="center">
-<p><img width="150" src="https://wscats.github.io/Angular-news/news/image/windiest.png"></p>
+<p><img width="150" src="https://stjw7098.github.io/vue-demo/img/cnode.jpg"></p>
 
 <h1>CNode App</h1>
 
@@ -14,16 +14,11 @@
 
 <p>
   <sub>作者 ❤︎ 
-    <a href="https://stjw7098.github.io">situ</a>
+    <a href="https://github.com/stjw7098">situ</a>
   </sub>
 </p>
 
-<p>
-<a href="https://github.com/Wscats/github-emoji"><img src="https://wscats.github.io/Angular-news/news/image/npm.svg" alt="NPM version"></a>
-<a href="https://github.com/Wscats/github-emoji"><img src="https://wscats.github.io/Angular-news/news/image/mit.svg" alt="MIT License"></a>
-<a href="https://github.com/Wscats/github-emoji"><img src="https://wscats.github.io/Angular-news/news/image/linux.svg" alt="Linux Build"></a>
-<a href="https://github.com/Wscats/github-emoji"><img src="https://wscats.github.io/Angular-news/news/image/windows.svg" alt="Window Build"/></a>
-</p>
+
 
 </div>
 
