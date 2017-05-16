@@ -1,10 +1,31 @@
 <template>
 <div>
     <mu-appbar title="Title" id="cnode_top" style="height:50px;background-color: rgba(153,102,255,0.9);">
-        <!--<mu-icon-button icon="mu-icon mudocs-icon-custom-github" slot="left"/>-->
+        
+        <!--左边菜单-->
+        <span class="myMenu" @click="changeMenu()" style="position:fixed;left:10px;top:14px;"></span>
+        <mu-drawer :open="open" :docked="docked" @close="changeMenu()">
+        <mu-list @itemClick="docked ? '' : changeMenu()" style="padding-top:0px">
+            <p style="background:rgba(153, 102, 255, 0.9);height:50px;color:white;text-align:center;line-height:50px">
+                <span style="font-size: 30px;position: fixed;left: 0px;width:50px" @click="open = false">&times;</span>
+                CNode
+            </p>
+            <i class="logo"></i>
+            
+            <div style="font-size:16px;padding-left:16px;border-bottom: 1px solid #ddd">省流量
+                <mu-switch v-model="toggle" @input="economy()"  class="demo-switch" style="margin-left:120px"/>
+            </div>
+            <mu-list-item title="关于作者" style="border-bottom: 1px solid #ddd" href="https://github.com/stjw7098"/>
+            <mu-list-item title="关于CNode社区" style="border-bottom: 1px solid #ddd" href="https://cnodejs.org/"/>
+            <mu-list-item title="当前版本  1.0" style="border-bottom: 1px solid #ddd"/>
+            <mu-list-item v-if="docked" @click.native="open = false" title="关闭"/>
+        </mu-list>
+        </mu-drawer>
 
-        <mu-tabs :value="activeTab" @change="handleTabChange" style="height:50px;background-color: rgba(255,255,255,0);font-family:bold;">
+        <!--顶部导航-->
+        <mu-tabs :value="activeTab" @change="handleTabChange" style="height:50px;background-color: rgba(255,255,255,0);font-family:bold;margin-left:20px">
             <!--<a href="#/index/list/:">-->
+            
             <mu-tab value="tab1" title="全部" @click="updateTab(0)" href="javascript:scroll(0,0)"/>
             <mu-tab value="tab2" title="精华" @click="updateTab(1)" href="javascript:scroll(0,0)"/>
             <mu-tab value="tab3" title="分享" @click="updateTab(2)" href="javascript:scroll(0,0)"/>
@@ -21,7 +42,7 @@
   <div class="alert-matte" v-show="login" @click="login=false"></div>
   <!--//登录框-->
   <div class="login-dialog alert" v-show="login"> 
-      <input type="text" placeholder="AccessToken"> 
+      <input class="count" type="text" placeholder="AccessToken"> 
       <button class="lbtn">登 录</button>  
   </div>
   <!--懒加载-->
@@ -39,7 +60,11 @@ export default {
       id:"",
       atBottom:false,
       currentTab:'',
-      login:false
+      login:false,
+
+      open: false,
+      docked: true,
+      toggle:false
     }
   },
   components: {
@@ -56,6 +81,7 @@ export default {
     handleTabChange (val) {
       this.activeTab = val
     },
+    //改变tab切换
     updateTab:function(tab){
         this.currentTab=tab;
 
@@ -66,6 +92,14 @@ export default {
             flag:true
         });
         //  this.atBottom=false;
+    },
+    //控制左边菜单的开关
+    changeMenu (flag) {
+      this.open = !this.open
+    //   this.docked = !flag
+    },
+    economy(){
+        this.$store.commit('setEconomy',this.toggle);
     }
 
   },
@@ -75,6 +109,26 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+    .count{
+        outline: none;
+    }
+    .logo{
+        background:url('../img/cnode.jpg') no-repeat;
+        background-size: 200px 200px;
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        margin-left: 27px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    .myMenu{
+        background:url('../img/menu.png') no-repeat;
+        background-size: 24px 24px;
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+    }
     .menuItem1{
         background:url('../img/login.png') no-repeat left center;
         background-size: 20px 20px;

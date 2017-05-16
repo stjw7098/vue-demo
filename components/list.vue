@@ -1,6 +1,7 @@
 <template>
     <div>
         <ul class="list" >
+        
             <li v-for="a in arrs" href="#/index/detail" @click="showList(a.id)"> 
                 <h3 class="top">
                     <span v-if="a.tab=='share'&&a.good==false&&a.top==false">分享</span>
@@ -11,7 +12,7 @@
                     {{a.title}}
                 </h3> 
                 <div class="status"> 
-                    <img class="avatar" :src="a.author.avatar_url"> 
+                    <img v-show="!economy" class="avatar" :src="a.author.avatar_url"> 
                     <div class="detail"> 
                         <div> 
                             <span> {{a.reply_count+'/'+a.visit_count}} </span> 
@@ -62,6 +63,9 @@
             },
             page:function(){
                 return this.$store.getters.getPage;
+            },
+            economy:function(){
+                return this.$store.getters.getEconomy;
             }
         },
         methods:{
@@ -73,6 +77,7 @@
             toTop:function(){
                 $('.list')[0].scrollTop=0;
             },
+            
 
             //懒加载,绑在window出现各种问题，建议绑在ul上面
             // showTop:function(el){
@@ -143,6 +148,9 @@
             }
         },
         mounted:function(){
+
+            console.log(this.$el)
+
             console.log(this.$route.params.id)
             // this.getData();
             console.log(this.props)
@@ -176,8 +184,19 @@
 </script>
 
 <style scoped lang="scss">
+    .demo-refresh-container{
+        // width: 100%;
+        // height: 600px;
+        // overflow: auto;
+        // -webkit-overflow-scrolling: touch;
+        // border: 1px solid #d9d9d9;
+        position: relative;
+        // user-select: none;
+    }
     .list{
         overflow: auto;
+
+        
     }
     #load{
         margin:5px auto;
@@ -192,9 +211,9 @@
     /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
     .list::-webkit-scrollbar  
     {  
-        width: 3px;  
+        width: 8px;  
         height: 2px;  
-        background-color: #7e57c2;  
+        // background-color: #7e57c2;  
     }  
     
     /*定义滚动条轨道 内阴影+圆角*/  
@@ -208,9 +227,9 @@
     /*定义滑块 内阴影+圆角*/  
     .list::-webkit-scrollbar-thumb  
     {  
-        border-radius: 2px;  
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
-        background-color: #7e57c2;  
+        border-radius: 20px;  
+        -webkit-box-shadow: inset 0 0 6px rgb(163, 117, 255);  
+        background-color: rgb(163, 117, 255);  
     }  
     .totop{
         position: fixed;

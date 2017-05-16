@@ -50,7 +50,9 @@ var store = new Vuex.Store({
         tab: "",
         exchange: [],
         page: null,
-        flag: true
+        flag: true,
+
+        economy: null
             //tab表示当前tab 0-4
             //exchange表示列表数据数组
             //page每次懒加载触发page+1
@@ -116,6 +118,11 @@ var store = new Vuex.Store({
 
 
         }
+
+        ,
+        setEconomy: function(state, val) {
+            state.economy = val;
+        }
     },
     getters: {
         //作用，某页面获取数据，例如:this.$store.getters.getChange;
@@ -130,6 +137,9 @@ var store = new Vuex.Store({
         },
         getFlag: function(state) {
             return state.flag;
+        },
+        getEconomy: function(state) {
+            return state.economy;
         }
     }
 });
