@@ -3,7 +3,7 @@
       <mu-appbar title="关于" style="height:50px;background-color: rgba(153,102,255,0.9);font-family:bold;position:fixed;left:0;top:0">
         <mu-icon-button icon="close" slot="left" @click="back()"/>
         <mu-icon-menu icon="more_vert" slot="right">
-            <mu-menu-item class="menuItem1" title="登录" @click="login=true" style="margin-left:10px;padding-left:10px;"/>
+            <!--<mu-menu-item class="menuItem1" title="登录" @click="login=true" style="margin-left:10px;padding-left:10px;"/>-->
             <mu-menu-item class="menuItem2" title="关于" style="margin-left:10px;padding-left:10px;"/>
             
         </mu-icon-menu>

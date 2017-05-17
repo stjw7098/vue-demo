@@ -11,14 +11,18 @@
                 CNode
             </p>
             <i class="logo"></i>
-            
-            <div style="font-size:16px;padding-left:16px;border-bottom: 1px solid #ddd">省流量
+            <div class="info">
+                <img :src="head"/>
+                <span>{{name}}</span>
+                
+            </div>
+            <div style="font-size:16px;padding-left:16px;border-bottom: 1px solid #ddd;margin-top:10px">省流量
                 <mu-switch v-model="toggle" @input="economy()"  class="demo-switch" style="margin-left:120px"/>
             </div>
             <mu-list-item title="关于作者" style="border-bottom: 1px solid #ddd" href="https://github.com/stjw7098"/>
             <mu-list-item title="关于CNode社区" style="border-bottom: 1px solid #ddd" href="https://cnodejs.org/"/>
-            <mu-list-item title="当前版本  1.0" style="border-bottom: 1px solid #ddd"/>
-            <mu-list-item v-if="docked" @click.native="open = false" title="关闭"/>
+            <mu-list-item title="当前版本  1.0"/>
+            <!--<mu-list-item v-if="docked" @click.native="open = false" title="关闭"/>-->
         </mu-list>
         </mu-drawer>
 
@@ -38,12 +42,14 @@
             
         </mu-icon-menu>
   </mu-appbar>
+  <div class="isSuccess" v-show="toast"></div>
   <!--遮罩-->
   <div class="alert-matte" v-show="login" @click="login=false"></div>
   <!--//登录框-->
   <div class="login-dialog alert" v-show="login"> 
-      <input class="count" type="text" placeholder="AccessToken"> 
-      <button class="lbtn">登 录</button>  
+      <input class="count" v-show="!cookie" type="text" v-model="accesstoken" placeholder="AccessToken"> 
+      <button class="lbtn" v-show="!cookie" @click="myLogin">登 录</button>  
+      <button class="lbtn" v-show="cookie" @click="logout">退 出 登 录</button>  
   </div>
   <!--懒加载-->
   <mu-circular-progress class="loadmore" :size="40" v-show="flag"/>
@@ -64,7 +70,15 @@ export default {
 
       open: false,
       docked: true,
-      toggle:false
+      toggle:false,
+
+      accesstoken:"",
+      toast:false,
+
+      name:"未登录",
+      head:require('../img/about.png'),
+
+      cookie:""
     }
   },
   components: {
@@ -100,15 +114,163 @@ export default {
     },
     economy(){
         this.$store.commit('setEconomy',this.toggle);
+    },
+    myLogin(){
+        //隐藏遮罩和登录框
+        this.login=false;
+        var self=this;
+        // 登录请求
+        $.ajax({
+            url:"https://cnodejs.org/api/v1/accesstoken",
+            type:"POST",
+            data:{
+                accesstoken:self.accesstoken
+            },
+            //登录成功回调
+            success:function(data){
+                if(data){
+                    $('.isSuccess').html('登录成功');
+                    
+                    
+                    self.toast=true;
+                    console.log(data)
+
+                    self.name=data.loginname;
+                    self.head=data.avatar_url;
+
+                    //设置有效期为30天的cookie
+                    var date=new Date();
+					date.setDate(date.getDate()+30);
+                    self.setCookie('accesstoken',self.accesstoken,date)
+
+                    var cookie=self.getCookie('accesstoken')
+
+                    self.cookie=cookie;
+
+                    setTimeout(function(){
+                        self.toast=false;
+                    },2000)
+                }
+            },
+            //登陆失败回调
+            error:function(){
+                $('.isSuccess').html('登录失败');
+                self.toast=true;
+                setTimeout(function(){
+                    self.toast=false;
+                },2000)
+            }
+        })
+    
+    },
+    //退出登录
+    logout(){
+        //隐藏退出框
+        this.login=false;
+
+        this.name="未登录";
+        this.head=require('../img/about.png');
+
+        this.cookie="";
+
+        var cookie=this.getCookie("accesstoken")
+        var date=new Date();
+        date.setDate(date.getDate()-31);
+        this.setCookie("accesstoken",cookie,date);
+    },
+    // 设置cookie方法
+    setCookie(name,val,expires,path){
+        var cookieStr = name + '=' + val;
+
+        if(expires){
+            cookieStr += ';expires=' + expires;
+        }
+
+        if(path){
+            cookieStr += ';path=' + path;
+        }
+
+        // 写入cookie
+        document.cookie = cookieStr;//'name=laoxie'
+    },
+    // 获取cookie方法
+    getCookie(name){
+        var cookie = document.cookie.split('; ');
+        var res;
+
+        for(var i=0;i<cookie.length;i++){
+            var arr = cookie[i].split('=');
+            if(arr[0] === name){
+                res = arr[1];
+                break;
+            }
+        }
+
+        return res;
     }
 
   },
   mounted:function(){
       $(".loadmore").css('left',(window.innerWidth-$(".loadmore").width())/2)
+
+      //一上来判断是否有cookie
+      var cookie=this.getCookie('accesstoken')
+
+      this.cookie=cookie;
+      if(cookie){
+          var self=this;
+          $.ajax({
+            url:"https://cnodejs.org/api/v1/accesstoken",
+            type:"POST",
+            data:{
+                accesstoken:cookie
+            },
+            //登录成功回调
+            success:function(data){
+                if(data){
+                    
+
+                    self.name=data.loginname;
+                    self.head=data.avatar_url;
+
+                    
+                }
+            }
+        })
+      }
   }
 }
 </script>
 <style scoped lang="scss">
+    .info{
+        padding-left: 16px;
+        font-size: 16px;
+        height: 40px;
+        
+        img{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        span{
+            margin-left: 10px;
+            vertical-align: top;
+            height: 40px;
+            line-height: 40px;
+        }
+    }
+    .isSuccess{
+        width: 100px;
+        height: 30px;
+        background: rgba(51, 51, 51, 0.8);
+        color: white;
+        position: fixed;
+        left:140px;
+        top:300px;
+        line-height: 30px;
+        border-radius: 20px;
+        text-align: center;
+    }
     .count{
         outline: none;
     }
